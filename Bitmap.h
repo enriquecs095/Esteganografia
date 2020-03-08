@@ -15,7 +15,7 @@ public:
 Bitmap();
 char NameFile[100];
 char NameFileNew[100];
-char Cadena[100];
+std::string Cadena;
 char Type[3];
 uint32_t Size;
 uint16_t Reserved1;
@@ -33,11 +33,11 @@ uint32_t ResoX;
 uint32_t ResoY;
 uint32_t SizeTableColor;
 uint32_t CountColor;
-void Read();
 void RGB();
 void Print();
-void SaveString();
+bool SaveString(char*);
 void ReadString();
+void ReadMetadata();
 
 private:
 #pragma pack(push,1)
@@ -54,12 +54,10 @@ int MaxString;
 std::ifstream BMPRead;
 std::ofstream BMPWrite;
 int LengthString;
+uint16_t NewReserved;
 unsigned char* ImageData;
 char* NewData;
 char* HeaderData;
 int SizeData;
 int PData=2;
 #pragma pack(pop)
-};
-
-#endif
