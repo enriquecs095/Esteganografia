@@ -45,13 +45,14 @@ void Bitmap::UnPack(){
 }
 
 
-void Bitmap::Read(){
+void Bitmap::ReadMetadata(){
+  char verificar[3];
+  verificar[2]=0;
   char header[SIZEHEADER];
   BMPRead.open(NameFile,std::ifstream::in | std::ifstream::binary);
-  if(BMPRead.fail()){
-    std::cout<<"Error opening the file:\n";
-    return;
-  }
+  BMPRead.read(verificar,2);
+    if(strcmp(verificar,"BM")!=0){return;}
+  BMPRead.seekg(0,std::ios::beg);
   BMPRead.read(header,sizeof(header));
   setHeader(header);
   UnPack();
@@ -76,7 +77,7 @@ void Bitmap::setData(const char* data){
 
 
 void Bitmap::RGB(){
-  Read();
+  ReadMetadata();
   unsigned char R;
   unsigned char G;
   unsigned char B;
@@ -94,11 +95,6 @@ void Bitmap::RGB(){
     count++;
     }
     count=0;
-    /*
-    for (int i = 100; i < 200; i++)
-    {
-       std::cout<<i+1<<" B: "<<Blue[i]<<" G: "<<Green[i]<<" R: "<<Red[i]<<std::endl;
-    }*/
            for(int j=Height-1;j>=0;j--) {
                 for(int i=0; i<Widht;i++) {
                 std::cout<<"B: "<<Blue[count]<<" G: "<<Green[count]<<" R: "<<Red[count]<<std::endl;
@@ -135,13 +131,11 @@ void Bitmap::Print(){
 }
 
 
-void Bitmap::SaveString(){
-  Read();
-  LengthString=strlen(Cadena);
-  if(LengthString>MaxString){
-    std::cout<<"Tamaño de la cadena excede el limite\n";
-    return;
-  }
+bool Bitmap::SaveString(char * cadena){
+  ReadMetadata();
+  NewReserved=strlen(cadena);
+  LengthString=(strlen(cadena))*8;
+  if(LengthString>SizeData){std::cout<<"Tamaño de la cadena excede el limite\n"; return false;}
   char *copy=new char[9];
   for (int i = 0; i < LengthString; i++){
     copy=int2bit(Cadena[i]); 
@@ -153,6 +147,7 @@ void Bitmap::SaveString(){
   Write();
   PData=2;
   delete copy;
+  return true;
 }
 
 
@@ -163,7 +158,7 @@ void Bitmap::Pack(){
   size+=2;
   memcpy(&HeaderData[size],&Size,4);
   size+=4;
-  memcpy(&HeaderData[size],&LengthString,2);
+  memcpy(&HeaderData[size],&NewReserved,2);
   size+=2;
   memcpy(&HeaderData[size],&Reserved2,2);
   size+=2;
@@ -198,12 +193,8 @@ void Bitmap::Pack(){
 
 
 void Bitmap::Write(){
-  BMPWrite.open(NameFileNew, std::ios::binary|std::ios::app);
-    if(BMPWrite.fail()){
-      std::cout<<"Error opening the file\n";
-      return;
-    }
-  BMPWrite.seekp(0,std::ios::end);
+  BMPWrite.open(NameFile,std::ios::binary);
+  BMPWrite.seekp(0,std::ios::beg);
   BMPWrite.write(HeaderData,SIZEHEADER);
   BMPWrite.seekp(Info,std::ios::beg);
   BMPWrite.write(NewData,SizeData);
@@ -256,14 +247,13 @@ void Bitmap::TurnOffBit(){
 
 
 void Bitmap::ReadString(){
-  Read();
+      ReadMetadata();
       char *copy=new char[9];
       char *copy2=new char[9];
       copy2[8]=0;
       char *copy3=new char[Reserved1+1];
       copy3[Reserved1]=0;
       int count=0;
-    if(Reserved1>0){
     for (int i = 0; i < Reserved1; i++){
       for (int j = 0; j < 8; j++){
         copy=int2bit(ImageData[PData]);
@@ -274,10 +264,9 @@ void Bitmap::ReadString(){
     memcpy(&copy3[count],&aux,1);
     count++;
     }
-    std::cout<<copy3<<"\n";
-      PData=2;
-  }
+    std::cout<<copy3<<"\n"; 
 }
+
 
 int Bitmap::bit2int(char *cadena){
   int aux=0;
@@ -292,4 +281,5 @@ int Bitmap::bit2int(char *cadena){
   }
   return aux2;
 }
+
 
