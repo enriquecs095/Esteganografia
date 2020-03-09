@@ -1,7 +1,7 @@
 # Esteganografia
 Desarrollado en c++ con Visual Studio Code
 
-Compilarlo en Linux deben hacer los siguientes comandos en la consola:
+Para Compilarlo en Linux deben hacer los siguientes comandos en la consola donde esta guardado el archivo:
 
 1-g++ -c Main.cpp 
 2- g++ Main.cpp Bitmap.cpp -o run.out (run.out es el archivo ejecutable del programa)
@@ -16,7 +16,7 @@ Compilarlo en Linux deben hacer los siguientes comandos en la consola:
   
   ./run.out -v cuadro.bmp (valida si la imagen es valida para guardar los datos y si la imagen ya contiene un mensaje)
   
-  Solo se pueden guardar los datos en imagenes bmp de 24 bits, la cantidad de caracteres se guardan en Reserved1 (2 bytes)
+  Solo se pueden guardar los datos en imagenes bmp de 24 bits, la cantidad de caracteres se guardan en el encabezado de la metada: Reserved1 (2 bytes)
   
   Proyecto desarrollado por Enrique Cruz- Estudiante de Ingenieria en Sistemas en universidad UNITEC de Honduras.
   
