@@ -15,8 +15,8 @@ public:
 Bitmap();
 char NameFile[100];
 char NameFileNew[100];
-std::string Cadena;
 char Type[3];
+int SizeData;
 uint32_t Size;
 uint16_t Reserved1;
 uint16_t Reserved2;
@@ -37,6 +37,7 @@ void RGB();
 void Print();
 bool SaveString(char*);
 void ReadString();
+void SaveStringFile(char*);
 void ReadMetadata();
 
 private:
@@ -58,6 +59,9 @@ uint16_t NewReserved;
 unsigned char* ImageData;
 char* NewData;
 char* HeaderData;
-int SizeData;
+char* Message;
 int PData=2;
 #pragma pack(pop)
+};
+
+#endif
