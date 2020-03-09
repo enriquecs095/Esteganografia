@@ -135,17 +135,17 @@ bool Bitmap::SaveString(char * cadena){
   ReadMetadata();
   NewReserved=strlen(cadena);
   LengthString=(strlen(cadena))*8;
+  int length=strlen(cadena);
   if(LengthString>SizeData){std::cout<<"Tamaño de la cadena excede el limite\n"; return false;}
   char *copy=new char[9];
-  for (int i = 0; i < LengthString; i++){
-    copy=int2bit(Cadena[i]); 
+  for (int i = 0; i < length; i++){
+    copy=int2bit(cadena[i]); 
     for (int i = 0; i < 8; i++){
       (copy[i]=='1') ? TurnOnBit() : TurnOffBit();//si la posicion de mi bits es 1 0 cero ejecuto cualquiera de las dos funciones
     }
   }
   Pack();
   Write();
-  PData=2;
   delete copy;
   return true;
 }
@@ -266,6 +266,34 @@ void Bitmap::ReadString(){
     }
     std::cout<<copy3<<"\n"; 
 }
+
+void Bitmap::SaveStringFile(char* filename){
+      ReadMetadata();
+      std::ofstream File;
+      File.open(filename,std::ios::app);
+      if(File.fail()){ "Error al abrir archivo\n"; return;}
+      char *copy=new char[9];
+      char *copy2=new char[9];
+      copy2[8]=0;
+      Message=new char[Reserved1+1];
+      Message[Reserved1]=0;
+      int count=0;
+    for (int i = 0; i < Reserved1; i++){
+      for (int j = 0; j < 8; j++){
+        copy=int2bit(ImageData[PData]);
+        (copy[7]=='1') ? copy2[j]='1' : copy2[j]='0';
+         PData+=3;
+      }
+    char aux=bit2int(copy2);
+    memcpy(&Message[count],&aux,1);
+    count++;
+    }
+    File.seekp(0,std::ios::beg);
+    File.write(Message,Reserved1);
+    std::cout<<"Datos guardados\n";
+    File.close();
+}
+
 
 
 int Bitmap::bit2int(char *cadena){
