@@ -17,6 +17,8 @@ char NameFile[100];
 char NameFileNew[100];
 char Type[3];
 int SizeData;
+int Limit=0;
+uint8_t Padding; //el alineamiento
 uint32_t Size;
 uint16_t Reserved1;
 uint16_t Reserved2;
@@ -51,7 +53,6 @@ char* int2bit(int);
 void TurnOnBit();
 void TurnOffBit();
 int bit2int(char*);
-int MaxString;
 std::ifstream BMPRead;
 std::ofstream BMPWrite;
 int LengthString;
