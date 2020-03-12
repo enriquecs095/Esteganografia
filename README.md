@@ -3,7 +3,7 @@ Desarrollado en c++ con Visual Studio Code
 
 Para Compilarlo en Linux deben hacer los siguientes comandos en la consola donde esta guardado el archivo:
 
-1-g++ -c Main.cpp 
+1-g++ -c Main.cpp. 
 2- g++ Main.cpp Bitmap.cpp -o run.out (run.out es el archivo ejecutable del programa)
 3-
   ./run.out -o cuadro.bmp -m "Mensaje Aqui"  (para guardar el mensaje en la imagen)
