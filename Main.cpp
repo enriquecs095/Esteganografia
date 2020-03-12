@@ -60,13 +60,12 @@ bool Validacion5(char**argv){
     strcpy(bitmap.NameFile,argv[2]);
     bitmap.ReadMetadata();
         if(strcmp(bitmap.Type,"BM")!=0){std::cout<<"Archivo o imagen no es BMP\n";return false;} 
-        if(bitmap.SizeP!=24){std::cout<<"Imagen no valida para ocultar el mensaje\n";return false;}
-        if(bitmap.Reserved1>0){std::cout<<"Imagen ya contiene un mensaje de "<<bitmap.Reserved1<<" caracteres\n"; return false;}
+        if(bitmap.SizeP!=24){std::cout<<"100: Imagen no valida para ocultar el mensaje\n";return false;}
+        if(bitmap.Reserved1>0){std::cout<<"101: Imagen ya contiene un mensaje de "<<bitmap.Reserved1<<" caracteres\n"; return false;}
+        if(bitmap.Limit==0){std::cout<<"Imagen muy pequeña\n"; return false;}
         File.close();
             return true;
 }
-
-
 
 void IniciarComando1(char** argv){
     Bitmap bitmap;
@@ -111,7 +110,8 @@ void IniciarComando4(char** argv){
 void IniciarComando5(char**argv){
     Bitmap bitmap;
     strcpy(bitmap.NameFile,argv[2]);
-    std::cout<<"Cantidad maxima de caracteres a ocultar es: "<<bitmap.SizeData/8<<"\n";
+    bitmap.ReadMetadata();
+    std::cout<<"Cantidad maxima de caracteres a ocultar es: "<<bitmap.Limit<<"\n";
 }
 
 void PrintError(){
