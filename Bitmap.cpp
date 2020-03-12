@@ -20,9 +20,9 @@ void Bitmap::UnPack(){
   copy+=4;
   memcpy(&SizeHead,copy,4);
   copy+=4;
-  memcpy(&Widht,copy,4);
+  memcpy(&Widht,copy,4);//69
   copy+=4;
-  memcpy(&Height,copy,4);
+  memcpy(&Height,copy,4);//32
   copy+=4;
   memcpy(&NumberP,copy,2);
   copy+=2;
@@ -40,8 +40,9 @@ void Bitmap::UnPack(){
   copy+=4;
   memcpy(&CountColor,copy,4);
   copy+=4;
-  MaxString=(Widht*Height*3)/24;
-  SizeData=Widht*Height*3;
+  if(Widht%4!=0){Padding=4-(Widht%4);}//el padding
+  SizeData=Height*Widht*3;
+  Limit=Height*Widht/8;
 }
 
 
@@ -71,6 +72,7 @@ void Bitmap::setHeader(const char* header){
 
 
 void Bitmap::setData(const char* data){
+
   ImageData=new unsigned char[SizeData];
  memcpy(ImageData, data,SizeData);
 }
@@ -126,17 +128,16 @@ void Bitmap::Print(){
   <<"Resolucion X: "<<ResoX<<"\n"
   <<"Resolucion Y: "<<ResoY<<"\n"
   <<"Tamaño de la tabla de colores: "<<SizeTableColor<<"\n"
-  <<"Cantidad de colores: "<<CountColor<<"\n"
-  <<"Cantidad maxima de caracteres: "<<MaxString<<"\n";;
+  <<"Cantidad de colores: "<<CountColor<<"\n";
 }
 
 
 bool Bitmap::SaveString(char * cadena){
   ReadMetadata();
   NewReserved=strlen(cadena);
-  LengthString=(strlen(cadena))*8;
+  LengthString=((strlen(cadena)));//cantidad de pixeles que voy a modificar
   int length=strlen(cadena);
-  if(LengthString>SizeData){std::cout<<"Tamaño de la cadena excede el limite\n"; return false;}
+  if(LengthString>Limit){std::cout<<"Tamaño de la cadena excede el limite\n"; return false;}
   char *copy=new char[9];
   for (int i = 0; i < length; i++){
     copy=int2bit(cadena[i]); 
@@ -156,6 +157,7 @@ void Bitmap::Pack(){
   int size=0;
   memcpy(&HeaderData[size],Type,2);
   size+=2;
+  //Size=(Widht*Height*3)+54;
   memcpy(&HeaderData[size],&Size,4);
   size+=4;
   memcpy(&HeaderData[size],&NewReserved,2);
@@ -245,7 +247,6 @@ void Bitmap::TurnOffBit(){
   PData+=3;
 }
 
-
 void Bitmap::ReadString(){
       ReadMetadata();
       char *copy=new char[9];
@@ -295,7 +296,6 @@ void Bitmap::SaveStringFile(char* filename){
 }
 
 
-
 int Bitmap::bit2int(char *cadena){
   int aux=0;
   int aux2=0;
@@ -309,5 +309,6 @@ int Bitmap::bit2int(char *cadena){
   }
   return aux2;
 }
+
 
 
